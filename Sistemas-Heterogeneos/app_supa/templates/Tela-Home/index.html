@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home</title>
+    <link rel="stylesheet" href="https://cdn.lineicons.com/5.0/lineicons.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    {% load static %}
+    <link rel="stylesheet" href="{%static 'home_css/reset.css'%}" />
+    <link rel="stylesheet" href="{%static 'home_css/navbar.css'%}" />
+    <link rel="stylesheet" href="{%static 'home_css/style.css'%}" />
+  </head>
+  <body>
+    <div class="wrapper">
+      <aside id="sidebar">
+        <div class="d-flex">
+          <button id="toggle-btn" type="button">
+            <i class="lni lni-dashboard-square-1"></i>
+          </button>
+          <div class="sidebar-logo">
+            <a href="#">SUPA</a>
+          </div>
+        </div>
+        <ul class="sidebar-nav">
+          <li class="sidebar-item">
+            <a href="#" class="sidebar-link">
+              <i class="lni lni-home-2"></i>
+              <span>Home</span>
+            </a>
+          </li>
+          <li class="sidebar-item">
+            <a href="{%url 'agendamento'%}" class="sidebar-link">
+              <i class="lni lni-agenda"></i>
+              <span>Agendamento</span>
+            </a>
+          </li>
+          <li class="sidebar-item">
+            <a href="{%url 'paciente'%}" class="sidebar-link">
+              <i class="lni lni-user-4"></i>
+              <span>Pacientes</span>
+            </a>
+          </li>
+          <li class="sidebar-item">
+            <a href="{%url 'medico'%}" class="sidebar-link">
+              <i class="lni lni-hierarchy-1"></i>
+              <span>Profissional</span>
+            </a>
+          </li>
+        </ul>
+        <div class="sidebar-footer">
+          <a href="/" class="sidebar-link">
+            <i class="lni lni-exit"></i>
+            <span>Loggout</span>
+          </a>
+        </div>
+      </aside>
+      <div class="main p3">
+        <div class="container">
+          <h1 class="header">Tabela de Agendamento</h1>
+          <table class="table table-striped-columns">
+            <thead>
+              <tr>
+                <th>Cliente</th>
+                <th>Prioridade</th>
+                <th>Médico</th>
+                <th>Data</th>
+                <th>Horário</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for agendamento in agendamentos %}
+              <tr>
+                <td>{{ agendamento.cartao_sus.nome }}</td>
+                <td>{{ agendamento.prioridade }}</td>
+                <td>{{ agendamento.profissional.nome }}</td>
+                <td>{{ agendamento.data }}</td>
+                <td>{{ agendamento.horario }}</td>
+                <td>
+                  <form
+                    action="{% url 'deletar' agendamento.id %}"
+                    method="post"
+                  >
+                    {% csrf_token %}
+                    <button
+                      class="btn btn-outline-danger"
+                      type="submit"
+                      onclick="return confirm('Tem certeza que deseja excluir este agendamento?');"
+                    >
+                      Deletar
+                    </button>
+                  </form>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const hamburger = document.querySelector("#toggle-btn");
+
+      hamburger.addEventListener("click", function () {
+        document.querySelector("#sidebar").classList.toggle("expand");
+      });
+      function toggleDateAndTimeFields() {
+        const prioridade = document.getElementById("prioridade").value;
+        const dataField = document.getElementById("data-field");
+        const horarioField = document.getElementById("horario-field");
+
+        if (prioridade === "alta" || prioridade === "urgente") {
+          dataField.style.display = "none";
+          horarioField.style.display = "none";
+          document.getElementById("data").removeAttribute("required");
+          document.getElementById("horario").removeAttribute("required");
+        } else {
+          dataField.style.display = "block";
+          horarioField.style.display = "block";
+          document.getElementById("data").setAttribute("required", "true");
+          document.getElementById("horario").setAttribute("required", "true");
+        }
+      }
+    </script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
